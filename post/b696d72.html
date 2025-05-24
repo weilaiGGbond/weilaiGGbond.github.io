@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>前端复习 - 原型继承再理解 | webbond の 博客</title><meta name="author" content="webbond"><meta name="copyright" content="webbond"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="原型继承的再理解今天分享的是原型继承的再理解 1234567891011121314151617&#x2F;&#x2F;原型继承function Father(name, age) &#123;  (this.name &#x3D; name), (this.age &#x3D; age);&#125;Father.prototype.setNewname &#x3D; function (name) &#123;  this.name &#x3D; na">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端复习 - 原型继承再理解">
+<meta property="og:url" content="http://example.com/post/b696d72.html">
+<meta property="og:site_name" content="webbond の 博客">
+<meta property="og:description" content="原型继承的再理解今天分享的是原型继承的再理解 1234567891011121314151617&#x2F;&#x2F;原型继承function Father(name, age) &#123;  (this.name &#x3D; name), (this.age &#x3D; age);&#125;Father.prototype.setNewname &#x3D; function (name) &#123;  this.name &#x3D; na">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/cover-one.png">
+<meta property="article:published_time" content="2025-05-20T11:43:16.000Z">
+<meta property="article:modified_time" content="2025-05-24T05:56:55.226Z">
+<meta property="article:author" content="webbond">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="ES6">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/cover-one.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "前端复习 - 原型继承再理解",
+  "url": "http://example.com/post/b696d72.html",
+  "image": "http://example.com/img/cover-one.png",
+  "datePublished": "2025-05-20T11:43:16.000Z",
+  "dateModified": "2025-05-24T05:56:55.226Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "webbond",
+      "url": "https://weilaiggbond.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/avatar.jpg"><link rel="canonical" href="http://example.com/post/b696d72.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":true,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '前端复习 - 原型继承再理解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: ffffff;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 档案</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover-one.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/avatar.jpg" alt="Logo"><span class="site-name">webbond の 博客</span></a><a class="nav-page-title" href="/"><span class="site-name">前端复习 - 原型继承再理解</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 档案</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">前端复习 - 原型继承再理解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-20T11:43:16.000Z" title="发表于 2025-05-20 19:43:16">2025-05-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-24T05:56:55.226Z" title="更新于 2025-05-24 13:56:55">2025-05-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h3 id="原型继承的再理解"><a href="#原型继承的再理解" class="headerlink" title="原型继承的再理解"></a>原型继承的再理解</h3><p>今天分享的是原型继承的再理解</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//原型继承</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Father</span>(<span class="params">name, age</span>) &#123;</span><br><span class="line">  (<span class="variable language_">this</span>.<span class="property">name</span> = name), (<span class="variable language_">this</span>.<span class="property">age</span> = age);</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Father</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">setNewname</span> = <span class="keyword">function</span> (<span class="params">name</span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = name;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Child</span>(<span class="params">name, age, gender</span>) &#123;</span><br><span class="line">  (<span class="variable language_">this</span>.<span class="property">name</span> = name), (<span class="variable language_">this</span>.<span class="property">age</span> = age), (<span class="variable language_">this</span>.<span class="property">gender</span> = gender);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">Child</span>.<span class="property"><span class="keyword">prototype</span></span> = <span class="keyword">new</span> <span class="title class_">Father</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Child</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">constructor</span>); <span class="comment">// [Function: Father]</span></span><br><span class="line"><span class="title class_">Child</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">constructor</span> = <span class="title class_">Child</span>;</span><br><span class="line"><span class="keyword">let</span> childin = <span class="keyword">new</span> <span class="title class_">Child</span>(<span class="string">&quot;原型继承的子类的实例化对象&quot;</span>, <span class="number">18</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line">childin.<span class="title function_">setNewname</span>(<span class="string">&quot;原型王二狗&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(childin); <span class="comment">// Child &#123; name: &#x27;原型王二狗&#x27;, age: 18, gender: &#x27;男&#x27; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>关于     子类.prototype.constructor &#x3D; 子类;</p>
+</blockquote>
+<p>再复习 JS 的时候忘写这一段语句了，但却发现也能运行，那既然也能运行为什么还要加上呢？</p>
+<p>或者说既然也能运行，那这一段话在代码中起着什么样的作用呢？</p>
+<p>我们将这一行注释掉</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Child.prototype.constructor = Child;</span></span><br><span class="line">结果为</span><br><span class="line"><span class="title class_">Father</span> &#123; <span class="attr">name</span>: <span class="string">&#x27;原型王二狗&#x27;</span>, <span class="attr">age</span>: <span class="number">18</span>, <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果很明显,<code>子类.prototype.constructor = 子类</code>;</p>
+<p>改变的是实例化对象的原型，但这样有什么用吗？</p>
+<p>我在搜索中发现实际上的用处并不大，给出的解释是：</p>
+<blockquote>
+<p>修正 constructor 是为了保证它能按照 constructor 被设计的意义一样正确的指向构造函数，如果 constructor 正确指向构造函数，就意味着能获取到构造函数的 prototype。</p>
+</blockquote>
+<p>而在红宝石上关于继承方法介绍中也删去了上述语句</p>
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/487257bed7680b6f05d2644293bb711a.png"></p>
+<p>所以总结就是并不是强制性的，可写可不写，但从编程习惯上，我们应该让对象的<code>constructor</code>指向其构造函数</p>
+<h3 id="生活周记"><a href="#生活周记" class="headerlink" title="生活周记"></a>生活周记</h3><p>今天是新生开学的第二天，我也要成为别人口中的‘学长’了，但又感觉怎么过的这么快呀？似乎我也是昨天刚进入的学校，但如今已经是大二的学长了。看来真的是需要做出改变了，学长和我们说我们的时间也不多了，但我心想‘可是我才刚上大二呀’，但事实上就是‘我已经上大二了’。看来时间真的不多了，我的基础还需要巩固，还有新知识需要学习。时间真的不多了，真要收一收大一的那种懒散的性格了，马上英语四六级就要开始报名了，更要开始向上赶超别人。这几天从小组回宿舍的路上看到还有人在图书馆前背英语（那时已经快 10：30），声音并不算大，但却直击内心深处——考研似乎成了当代高校学子改变自己的主流，但也是需要不断的接受‘内卷’才能有那轻微的突破。</p>
+<p>但我们应该如何做呢？随波逐流，还是逆水行舟？</p>
+<p>答案并非是唯一的，唯有逆水行舟‘卷’起惊涛骇浪，是目标，亦是远见，但随波逐流考取功名也是情怀，是现实，没有人需要被定义成行舟和水流，但都是需要书山有路勤为径，学海无涯苦作舟。</p>
+<p>既然没有前方的目标，那就不能屈于现在，从新出发。</p>
+<p><strong>“当回忆往事的时候，他不会因为虚度年华而悔恨，也不会因为碌碌无为而羞愧；”</strong></p>
+<p>所以从现实出发放眼未来，不断突破自我，向上前进。</p>
+<p>也许在未来在某一刻回忆起现在的一刻亦是一道別味的风景。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://weilaiggbond.github.io/">webbond</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/post/b696d72.html">http://example.com/post/b696d72.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">webbond の 博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaScript/">JavaScript</a><a class="post-meta__tags" href="/tags/ES6/">ES6</a></div><div class="post-share"><div class="social-share" data-image="/img/cover-one.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/post/b696d71.html" title="关于UI-提示的封装"><img class="cover" src="/img/cover-five.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">关于UI-提示的封装</div></div><div class="info-2"><div class="info-item-1">前言在平时写项目的时候总会遇到各种弹窗，这些弹窗当然不算难写，但其代码数量之多，以及重复率很高，所以我就想着使用一个函数和css对我们常见的提示性弹窗进行了封装，可以重复调用，并且也可以有效的提高服务器解析html的效率 JS代码在JS代码中需要注意的是，当调用时需要为其设置默认属性，以保证在使用时出现了类型错误导致无法调用，并且提醒用户需要更改信息以保证代码的正常运行 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849function tipUi(tip) &#123;     tip.color = !tip.color ? &#x27;black&#x27; : tip.color;    let p = document.createElement(&#x27;p&#x27;);    // 判断文本类型(提示，错误，正确)    let textContent = &#x27;&amp;#xe605;&#x27;;    switch...</div></div></div></a><a class="pagination-related" href="/post/b696d74.html" title="前端开发 - 模板引擎的基本使用方式"><img class="cover" src="/img/cover-four.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">前端开发 - 模板引擎的基本使用方式</div></div><div class="info-2"><div class="info-item-1">模板引擎art-template对我来说并不是陌生的东西，学过两次的模板引擎在前两次的项目中我并没有用到，但到现在要写视频项目的个人中心页的时候发现，不用模板引擎的话代码的复用性太低，而且那Ctrl + C,Ctrl + v的复用代码实在丑陋，所以又重拾art-template，本篇文章就是一些关于模板引擎的基本使用，其中也不乏包含我在实际开发中出现的问题  模板引擎应该如何使用？    模板如何引入？  为什么要使用模板引擎？抛开优势，谈精神价值，纯纯情怀 模板引擎可以很大程度上提升代码的复用性，和可维护性，如果只是单纯的使用cv来写代码的话在后面维护的时候就需要劳神费事，但使用模板引擎就可以减少很多工作量，在模板引擎中的模板页面中进行更改就可以达到牵一发而动全身的效果 此外，模板引擎art-template还贴心的提供了提供了模板继承和子模板，这样就可以将大量相同的代码进行继承和动态更改的，而且，模板引擎还拥有接近 JavaScript 渲染极限的的性能，提供了两套模板语法，可谓是优势多多 模板引擎的基本语法标准语法输出变量1&lt;!-- 输出变量...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/post/a074123a.html" title="使用echars实现数据可视化"><img class="cover" src="/img/bg.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-26</div><div class="info-item-2">使用echars实现数据可视化</div></div><div class="info-2"><div class="info-item-1">Echars实现数据可视化在搭建后台页面时，可能会遇到很多的表格，但有时表格所展现的数据并不能直观的体现出当前用户的宏观信息，所以就可以引入一个新的表格插件 ——Echars 快速上手 - Handbook - Apache ECharts 什么是Echars？Echarts是一个基于JavaScript的开源可视化库。它提供了各种图表类型（如折线图、柱状图、散点图、地图等）和交互组件（如数据区域缩放、拖拽、动态数据更新等），能够帮助使用者快速构建并展示数据可视化效果。 在上述概念中提出了数据可视化——数据可视化是指将数据以图表、图形、地图等可视化的形式展现出来，以方便用户更加直观地分析数据。 如何使用Echars？引入 echars 文件https://cdn.staticfile.org/echarts/4.7.0/echarts.js 首先先看一下使用 Echars 库创建的配置示例 1234567891011121314151617181920212223242526272829303132333435363738394041option = &#123; ...</div></div></div></a><a class="pagination-related" href="/post/b696d78.html" title="前端开发 - 事件委托和事件冒泡以及事件捕获"><img class="cover" src="/img/cover-three.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">前端开发 - 事件委托和事件冒泡以及事件捕获</div></div><div class="info-2"><div class="info-item-1">前言最近感觉比较忙，但又不知道忙些什么，明明已经没参加什么活动，但还是感觉自己的事情很多，每天看着大一的进进出出，开始有点后悔自己在大一时没有多学点东西，到大二开始担心的事情逐渐比较多了，想着四级考试，想着专业课成绩，又想着每日的计划。感觉生活浑浑噩噩，现在发现不如早点放弃一些不值得焦虑的思考，比如专业课成绩，可以先慢慢学习老师在课堂上的知识，在集中时间解决不会的问题，零零碎碎的时间总是集中不了精神，不如就放空自己，集中精力做一件事。 事件委托和事件冒泡以及事件捕获事件冒泡和事件捕获的区别  事件捕获：事件从最外层的祖先元素向目标元素传播，然后在目标元素上触发。 事件冒泡：事件从目标元素开始，向上传播至最外层的祖先元素，直至根节点。  事件冒泡 1234&lt;div id=&quot;outer&quot; style=&quot;padding: 20px; background-color: #eee;&quot;&gt;   &lt;div id=&quot;middle&quot; style=&quot;padding: 20px;...</div></div></div></a><a class="pagination-related" href="/post/b696d11.html" title="前端工具 - AOS实现前端动画效果"><img class="cover" src="/img/cover-four.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">前端工具 - AOS实现前端动画效果</div></div><div class="info-2"><div class="info-item-1">前言在现代Web开发中，动画效果是提升用户体验和页面交互性的重要因素之一。而AOS（Animate On Scroll）作为一个强大的动画库，可以帮助我们轻松地实现网页元素的滚动动画效果。 什么是AOS？AOS是一个基于CSS3和JavaScript的动画库，它专注于为网页元素添加滚动动画效果。通过AOS，我们可以实现元素在进入或离开视口时的各种动态效果，比如淡入、滑动、旋转等。AOS的优点在于简单易用，无需编写复杂的动画代码，只需通过简单的配置就能实现惊艳的滚动动画效果。 使用AOS的基本步骤：引入AOS库在HTML文档的&lt;head&gt;标签内，加入以下代码引入AOS库的CSS和JavaScript文件： 12&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css&quot;&gt;&lt;script...</div></div></div></a><a class="pagination-related" href="/post/b696d761.html" title="前端开发 - JavaScript 知识复习"><img class="cover" src="/img/cover-one.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">前端开发 - JavaScript 知识复习</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/post/b696d89.html" title="RuoYi框架的理解"><img class="cover" src="/img/cover-three.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">RuoYi框架的理解</div></div><div class="info-2"><div class="info-item-1">前言在前端开发的学习之旅中，我参与到了校企合作的项目开发中，让我有机会深入探索了RuoYi框架。RuoYi是一个基于SpringBoot后台和Vue前端技术栈的快速开发平台。集成了大量的前后端分离的开发实践，通过学习和实践RuoYi框架，我获得了丰富的经验和宝贵的技能，进一步加强了我作为前端开发者的能力。 RuoYi框架的理解学习心得深入了解RuoYi让我感受到了前后端分离架构的强大。RuoYi框架采用了Vue.js、Element UI和Vuex等前沿技术，为开发者提供了一整套的企业级前端解决方案，尤其是RuoYi的权限管理功能，通过引入JWT实现安全的用户认证和授权，让系统的安全性得到了极大的增强。 RuoYi前端的模块化结构也给我的项目组织带来了启发。每个功能模块如用户管理、系统监控等都被划分为独立的目录和组件，这样的划分确保了代码的清晰性和可维护性。在实际应用中，这种模块化的思想极大地提高了开发效率和代码复用性。Ruoyi可以通过简单的配置来定制功能，从后端的数据处理到前端的界面展示，所有的这些都可以通过配置文件来灵活控制。 深刻体会在&lt;font...</div></div></div></a><a class="pagination-related" href="/post/b696d76.html" title="前端开发 - input 框动画效果实现"><img class="cover" src="/img/cover-four.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="info-item-2">前端开发 - input 框动画效果实现</div></div><div class="info-2"><div class="info-item-1">前言 — 期末周over终于熬过了期末周的艰难痛苦，转眼间已经将近一个月的时间没有敲代码了。一日不见，如隔三秋，在从期末周到现在的学习这段时间里，我学习了有关nodeJs和axios的知识，说的是学习了但实际上用的还是不太熟练，看来我需要努力的地方还有很多。 今天分享的是一些有关input框的两个前端动画效果 input框动画登录注册的input框动画1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950label &#123;  position: relative;  #userPassword&#123;    outline: none;    width: 80%;    height: 30px;    font-size: 20px;  &#125;  span &#123;    transition-duration: 0.5s;    font-size: 18px;    color: #5a5959;   ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">webbond</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://weilaiggbond.github.io/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/weilaiGGbond" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E7%BB%A7%E6%89%BF%E7%9A%84%E5%86%8D%E7%90%86%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">原型继承的再理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%B4%BB%E5%91%A8%E8%AE%B0"><span class="toc-number">2.</span> <span class="toc-text">生活周记</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/65d1ef9e.html" title="前端开发 - 箭头函数的理解和使用"><img src="/img/cover-five.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端开发 - 箭头函数的理解和使用"/></a><div class="content"><a class="title" href="/post/65d1ef9e.html" title="前端开发 - 箭头函数的理解和使用">前端开发 - 箭头函数的理解和使用</a><time datetime="2025-05-21T12:03:40.384Z" title="发表于 2025-05-21 20:03:40">2025-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/b696d11.html" title="前端工具 - AOS实现前端动画效果"><img src="/img/cover-four.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端工具 - AOS实现前端动画效果"/></a><div class="content"><a class="title" href="/post/b696d11.html" title="前端工具 - AOS实现前端动画效果">前端工具 - AOS实现前端动画效果</a><time datetime="2025-05-20T11:43:16.000Z" title="发表于 2025-05-20 19:43:16">2025-05-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/b696d761.html" title="前端开发 - JavaScript 知识复习"><img src="/img/cover-one.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端开发 - JavaScript 知识复习"/></a><div class="content"><a class="title" href="/post/b696d761.html" title="前端开发 - JavaScript 知识复习">前端开发 - JavaScript 知识复习</a><time datetime="2025-05-20T11:43:16.000Z" title="发表于 2025-05-20 19:43:16">2025-05-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/b696d89.html" title="RuoYi框架的理解"><img src="/img/cover-three.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RuoYi框架的理解"/></a><div class="content"><a class="title" href="/post/b696d89.html" title="RuoYi框架的理解">RuoYi框架的理解</a><time datetime="2025-05-20T11:43:16.000Z" title="发表于 2025-05-20 19:43:16">2025-05-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/b696d33.html" title="前端开发 - 学习git和使用ajax发送请求"><img src="/img/cover-five.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端开发 - 学习git和使用ajax发送请求"/></a><div class="content"><a class="title" href="/post/b696d33.html" title="前端开发 - 学习git和使用ajax发送请求">前端开发 - 学习git和使用ajax发送请求</a><time datetime="2025-05-20T11:43:16.000Z" title="发表于 2025-05-20 19:43:16">2025-05-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">随便讲点什么</p><div class="bg-ad"><div>这里是由 weilaibond 精心搭建的 个人编程学习博客，一个专注于记录「从编程小白到独立开发者」成长轨迹的专属空间。无论你是初入代码世界的萌新，还是正在寻找技术共鸣的同行者，都能在这里找到属于自己的探索坐标。</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://github.com/weilaiGGbond/">weilaibond の github</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">胡乱导航</p><ul class="ft-links"><li><a target="_blank" rel="noopener" href="https://fe32.top/about/">关于博主</a><a target="_blank" rel="noopener" href="https://fe32.top/archives/">文章归档</a></li><li><a target="_blank" rel="noopener" href="https://fe32.top/categories/">文章分类</a><a target="_blank" rel="noopener" href="https://fe32.top/tags/">文章标签</a></li></ul></div></div></div></div><div class="copyright">&copy;2019 - 2025  <i id="heartbeat" class="fa fas fa-heartbeat"></i> webbond</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
