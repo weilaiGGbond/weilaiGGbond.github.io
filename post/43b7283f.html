@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>前端面经-前端vue技术栈 | webbond の 博客</title><meta name="author" content="webbond"><meta name="copyright" content="webbond"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="vue 中双向数据绑定的原理vue中的双向绑定主要依靠数据劫持的发布-订阅方式，通过Object.defineProperty方法劫持属性的getter和setter方法，在数据变动时发布信息给订阅者，触发相关的回调 使用observe对数据对象进行递归遍历，为其添加上 getter 和 setter 方法，当属性发生变化时就会调用 setter 方法，从而监听到数据的变化 使用complile对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端面经-前端vue技术栈">
+<meta property="og:url" content="https://weilaiggbond.github.io/post/43b7283f.html">
+<meta property="og:site_name" content="webbond の 博客">
+<meta property="og:description" content="vue 中双向数据绑定的原理vue中的双向绑定主要依靠数据劫持的发布-订阅方式，通过Object.defineProperty方法劫持属性的getter和setter方法，在数据变动时发布信息给订阅者，触发相关的回调 使用observe对数据对象进行递归遍历，为其添加上 getter 和 setter 方法，当属性发生变化时就会调用 setter 方法，从而监听到数据的变化 使用complile对">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://weilaiggbond.github.io/img/cover-four.jpeg">
+<meta property="article:published_time" content="2025-03-22T12:02:53.000Z">
+<meta property="article:modified_time" content="2025-05-26T06:27:53.225Z">
+<meta property="article:author" content="webbond">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://weilaiggbond.github.io/img/cover-four.jpeg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "前端面经-前端vue技术栈",
+  "url": "https://weilaiggbond.github.io/post/43b7283f.html",
+  "image": "https://weilaiggbond.github.io/img/cover-four.jpeg",
+  "datePublished": "2025-03-22T12:02:53.000Z",
+  "dateModified": "2025-05-26T06:27:53.225Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "webbond",
+      "url": "https://weilaiggbond.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/avatar.jpg"><link rel="canonical" href="https://weilaiggbond.github.io/post/43b7283f.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":true,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '前端面经-前端vue技术栈',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-color: rgb(247, 249, 254);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 档案</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover-four.jpeg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/avatar.jpg" alt="Logo"><span class="site-name">webbond の 博客</span></a><a class="nav-page-title" href="/"><span class="site-name">前端面经-前端vue技术栈</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 档案</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">前端面经-前端vue技术栈</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-22T12:02:53.000Z" title="发表于 2025-03-22 20:02:53">2025-03-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-26T06:27:53.225Z" title="更新于 2025-05-26 14:27:53">2025-05-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h3 id="vue-中双向数据绑定的原理"><a href="#vue-中双向数据绑定的原理" class="headerlink" title="vue 中双向数据绑定的原理"></a><font style="color:#DF2A3F;"><code>vue</code> 中双向数据绑定的原理</font></h3><p><code>vue</code>中的双向绑定主要依靠数据劫持的发布-订阅方式，通过<code>Object.defineProperty</code>方法劫持属性的<code>getter</code>和<code>setter</code>方法，在数据变动时发布信息给订阅者，触发相关的回调</p>
+<p>使用<code>observe</code>对数据对象进行递归遍历，为其添加上 <code>getter</code> 和 <code>setter</code> 方法，当属性发生变化时就会调用 <code>setter</code> 方法，从而监听到数据的变化</p>
+<p>使用<code>complile</code>对模板指令进行解析，将模板中的变量转换成真实的数据，然后初始化渲染页面视图，并为模板指令对应的节点绑定更新函数，添加监听数据的订阅者，当数据变化时进行视图的更新</p>
+<p><code>watcher</code>是连接<code>observe</code>和<code>complie</code>的桥梁，它的主要作用是在自身实例化时往属性<code>dep</code>上添加自己，可以在属性变化时接收到<code>dep.notify()</code>的指令执行自身的<code>update()</code>函数，触发<code>compile</code>上的回调</p>
+<h3 id="vue2-和-vue3-的主要区别"><a href="#vue2-和-vue3-的主要区别" class="headerlink" title="vue2 和 vue3 的主要区别"></a><font style="color:#DF2A3F;"><code>vue2</code> 和 <code>vue3</code> 的主要区别</font></h3><ul>
+<li>使用的 <code>API</code> 不同，<code>vue3</code> 中使用的组合式 <code>API</code> 代替了 <code>vue2</code> 中的选项式 <code>API</code>，相较于选项式 <code>API</code>，组合式 <code>API</code> 同一逻辑下代码比较集中，可读性强，更便于后期维护</li>
+<li>数据劫持的方法不同，<code>vue3</code>中使用<code>Proxy</code>代替<code>Object.defineProperty</code>,<code>Proxy</code> 在实现数据劫持和双向绑定时具有更高的效率，可以对数组和 <code>map</code>、<code>set</code> 等进行数据监听而不需要重写某些属性</li>
+<li>性能优化，相较于 <code>vue2</code> 中的 <code>diff</code> 算法，<code>vue3</code> 中使用长稳定子序列代替 <code>vue2</code> 中的从两端到中间遍历的方式，减少了静态节点的比对，提升了效率和性能，此外 <code>Vue3</code> 中具有 <code>Tree-shaking</code> 支持，支持按需导入模块，减少打包体积</li>
+<li>生命周期的更改，<code>vue3</code>中对生命周期的命名也进行了修改，尤其时将 <code>beforeDestory</code> 和 <code>destoried</code> 修改成<code>onbeforeUnmount</code>和<code>onUnmounted</code>等</li>
+<li>新的组件，<code>vue3</code>中加入了新的组件如<code>Teleport</code>和<code>suspense</code>，还支持多根节点组件,使得组件控制和异步渲染更加简单和高效</li>
+<li>对 <code>TS</code> 的支持，相较于 <code>vue2</code> 来说，<code>vue3</code> 对 <code>typescript</code> 有更好的支持，<code>typescript</code> 集成更加紧密</li>
+</ul>
+<h3 id="diff-算法的原理"><a href="#diff-算法的原理" class="headerlink" title="diff 算法的原理"></a><code>diff</code> 算法的原理</h3><p>在 <code>vue2</code> 中采用双端比较算法，即采用头尾指针双向遍历，同时从新旧虚拟 <code>DOM</code> 的头尾节点开始比对，寻找可复用的节点。若头尾节点不匹配，则继续遍历中间节点，通过创建、删除或移动 <code>DOM</code> 节点完成更新</p>
+<p>对于 <code>vue3</code> 而言，结合动态头尾指针和最长递增子序列算法，先跳过前置和后置的相同节点，缩小对比范围，然后根据 <code>key</code> 建立新节点索引到旧节点索引的映射表，通过最长递增子序列算法找到最长稳定子序列，仅对非稳定节点进行移动，最小化操作次数，而且 <code>vue3</code> 还使用了静态提升和补丁标志的方法来实现 <code>diff</code> 算法的优化。</p>
+<h3 id="最长递增子序列在什么时候会触发更新"><a href="#最长递增子序列在什么时候会触发更新" class="headerlink" title="最长递增子序列在什么时候会触发更新"></a>最长递增子序列在什么时候会触发更新</h3><p>最长递增子序列仅在子节点顺序发生变化时触发，主要是在列表数据重新排序和动态渲染的列表内容发生结构性的变化，但是对于仅影响节点内容，或者子节点顺序未改变，<code>vue</code> 会跳过最长递增子序列计算，直接复用 <code>DOM</code> 元素</p>
+<h3 id="SPA-中如何提高-SEO-的搜索引擎优化？"><a href="#SPA-中如何提高-SEO-的搜索引擎优化？" class="headerlink" title="SPA 中如何提高 SEO 的搜索引擎优化？"></a><code>SPA</code> 中如何提高 <code>SEO</code> 的搜索引擎优化？</h3><ul>
+<li>采用同构渲染，即对于页面的首页采用服务端渲染或者静态站点预渲染，其他网页仍然采用<code>SPA</code>单页面处理，不仅提高了<code>SEO</code>的搜索引擎优化，还解决了服务端渲染请求压力过大的问题</li>
+<li>合理设置<code>meta</code>标签，动态设置页面的<code>title</code>、<code>desription</code>等标签，确保每个页面都有独特和描述准确的<code>Meta</code>信息</li>
+<li>优化网站性能，提升页面加载速度，能够提升网站排名，更利于搜索引擎爬虫抓取，提升 <code>SEO</code> 效果</li>
+</ul>
+<h3 id="watch-和-watchEffect-的区别"><a href="#watch-和-watchEffect-的区别" class="headerlink" title="watch 和 watchEffect 的区别"></a><code>watch</code> 和 <code>watchEffect</code> 的区别</h3><p>侦听方式不同：<code>watch</code> 需要明确指定要监听的数据，而<code>watchEffect</code>会自动追踪和响应所有可访问到的响应式数据</p>
+<p>初始化和执行行为不同：<code>watch</code> 默认是不进行初始化执行的，需要手动设置<code>immediate:true</code>来实现，但<code>watchEffect</code>在初始化时就会执行一次，并收集需要监听的数据</p>
+<p>数据获取方式不同： <code>watch</code> 可以同时获取数据变化前后的值，<code>watchEffect</code>只能获取到变化后的值，无法获取到更新前的值</p>
+<p>默认配置不同：<code>watch</code>默认无法对整个对象进行监听，需要对其设置<code>deep:true</code>才能对其进行深度监听，而<code>watchEffect</code>会自动对整个对象进行依赖追踪包括对象的属性</p>
+<h3 id="ref-和-reactive-的区别"><a href="#ref-和-reactive-的区别" class="headerlink" title="ref 和 reactive 的区别"></a><code>ref</code> 和 <code>reactive</code> 的区别</h3><p>适用数据类型不同：<code>ref</code> 常用于基本数据类型和对象类型的数据响应式，<code>reactive</code>仅用于对象或数组等引用类型的数据响应式</p>
+<p>响应式原理存在差异：<code>ref</code>是通过将值包装在一个对象的<code>value</code>属性中，当读取或修改<code>value</code>时，会触发内部的<code>getter</code>和<code>setter</code>方法，从而实现数据的监听和依赖收集。对于对象类型，<code>vue</code> 会对其响应式转换（<code>reactive</code>），然后再存储在<code>value</code>属性中，因此在访问 <code>ref</code> 的响应式对象时需要使用<code>.value</code>。<code>reactive</code>则是通过<code>Proxy</code>对传入的对象进行代理。通过拦截对对象的操作来实现数据的监听和依赖追踪</p>
+<p>响应式丢失问题：对于<code>reactive</code>对象直接解构会失去响应式，需用<code>toRefs</code>转换，对于<code>ref</code>对象解构后使用<code>.value</code>仍然具有响应式</p>
+<h3 id="watch、computed、methods三者的区别"><a href="#watch、computed、methods三者的区别" class="headerlink" title="watch、computed、methods三者的区别"></a><code>watch</code>、<code>computed</code>、<code>methods</code>三者的区别</h3><p>对于<code>computed</code>计算属性而言，他需要依赖其他属性值，而且<code>computed</code>的值有缓存，只有它依赖的属性值发生变化时，下一次获取<code>computed</code>的值时才会触发重新计算，而且<code>computed</code>中的属性是只读的，只有通过调用 set 的方法才会改变其内部属性的值。</p>
+<p>对于<code>watch</code>监听器来说，更多的是观察的作用，无缓存性，类似于某些数据的监听回调，当数据发送变化是执行回调进行后续操作，如果在回调函数中改变其监听的属性值可能会导致循环调用的问题。</p>
+<p>对于<code>methods</code>来说，它的属性和计算属性相似，但不同的是<code>methods</code>中不具有缓存，而是在调用是会执行该函数</p>
+<h3 id="v-if、v-show、v-html-的原理和之间的区别"><a href="#v-if、v-show、v-html-的原理和之间的区别" class="headerlink" title="v-if、v-show、v-html 的原理和之间的区别"></a><code>v-if</code>、<code>v-show</code>、<code>v-html</code> 的原理和之间的区别</h3><p><code>v-if</code> 在生成<code>vnode</code>的时候会忽略对应的节点，不会进行节点渲染，适合不太经常更改的情况；</p>
+<p><code>v-show</code> 会生成<code>vnode</code>，也会渲染真实节点，但是会在节点的属性中添加<code>display:none</code>的隐藏属性，适用于频繁切换的场景</p>
+<p><code>v-html</code> 会移除节点下的所有节点，通过设置节点下的<code>innerHTML</code>为<code>v-html</code>的值，在使用时要注意恶意的网络攻击</p>
+<h3 id="data-为什么是一个函数而不是对象"><a href="#data-为什么是一个函数而不是对象" class="headerlink" title="data 为什么是一个函数而不是对象"></a><code>data</code> 为什么是一个函数而不是对象</h3><p><code>JS</code> 中的对象是引用数据类型，当多个实例引用到同一对象中时，当其中一个实例对这个对象进行操作时就会导致所有实例中对象变化，但是 <code>vue</code> 中更多时想要复用组件，就需要组件之间的数据互不干扰，因此使用函数返回的方法就能在复用组件时返回一个新的 <code>data</code> 数据，组件中的数据就成了私有数据变量，而不互相干扰其他组件的数据变化</p>
+<h3 id="v-if-和-v-for-可以一起使用吗？"><a href="#v-if-和-v-for-可以一起使用吗？" class="headerlink" title="v-if 和 v-for 可以一起使用吗？"></a><code>v-if</code> 和 <code>v-for</code> 可以一起使用吗？</h3><p>可以一起使用，但是不建议。</p>
+<p>在 <code>vue2</code> 中 <code>v-for</code> 的优先级高于 <code>v-if</code>，如果两者用在同一元素中就会导致 <code>v-for</code> 先执行为每一个迭代项都生成虚拟 <code>DOM</code> 节点，然后再进行 <code>v-if</code> 的条件判断，就会导致不必要的性能消耗</p>
+<p>在 <code>vue3</code> 中 <code>v-if</code> 的优先级高于 <code>v-for</code>，但是还是不建议一起使用，原因是如果 <code>v-if</code> 中的条件判断是 <code>v-for</code> 中可迭代的变量就会导致 <code>v-for</code> 还未被初始化，而无法执行 <code>v-if</code> 的条件判断</p>
+<p>解决方法是可以通过计算属性来过滤数据，避免两者直接一起使用</p>
+<h3 id="v-model-的实现原理和-vue2-中的-v-model-和-vue3-之间的有什么区别"><a href="#v-model-的实现原理和-vue2-中的-v-model-和-vue3-之间的有什么区别" class="headerlink" title="v-model 的实现原理和 vue2 中的 v-model 和 vue3 之间的有什么区别"></a><code>v-model</code> 的实现原理和 <code>vue2</code> 中的 <code>v-model</code> 和 <code>vue3</code> 之间的有什么区别</h3><p>在 <code>vue</code> 中，<code>v-model</code> 是一个语法糖，其本质是将数据绑定到输入元素的值上，当用户进行输入时，<code>v-model</code> 会监听 <code>input</code> 事件，并将新的值更新到数据模型中，在 <code>vue3</code> 中允许一个组件上绑定多个 <code>v-model</code>,每个 <code>v-model</code> 可以绑定不同的 <code>prop</code> 和事件</p>
+<h3 id="vue-单页面和多页面的区别-SSR-CSR-SSG-的区别"><a href="#vue-单页面和多页面的区别-SSR-CSR-SSG-的区别" class="headerlink" title="vue 单页面和多页面的区别 SSR CSR SSG 的区别"></a><code>vue</code> 单页面和多页面的区别 <code>SSR</code> <code>CSR</code> <code>SSG</code> 的区别</h3><p><code>SPA</code> 指的是只有一个页面的应用，一开始只需要加载一次 <code>js、css</code> 等相关资源，所有的内容都包含在主页面，单页应用跳转，就是切换相关组件，仅仅刷新局部资源</p>
+<p><code>MPA</code> 指的是多个独立页面的应用，每个页面必须重复加载 <code>js、css</code> 等相关资源，多页应用跳转就要整页资源刷新</p>
+<p><code>SSR</code> 指的是服务端渲染，当用户访问某个页面时，由服务器端生成 <code>HTML</code> 进行数据渲染，再由浏览器解析呈现给用户，优点时首次访问响应时间短，利于 <code>SEO</code> 搜索，但是会给服务器造成较大的压力，且不利于前后端分离</p>
+<p><code>CSR</code> 指的是客户端渲染，特点是所有页面都在客户端，不同页面间可以切换流程，利于前后端分离，提高开发效率，缺点是首次访问响应时间长，不利于 <code>SEO</code> 的查找</p>
+<p><code>SSG</code> 指的是静态站点渲染，特点是构建时生成和静态部署的，优点在于页面响应快，托管和运维成本低，但同时带来的特点十分明显，页面数据不具备实时性，难以应对复杂的页面，适用于数据时效性要求不高的场景</p>
+<h3 id="Vue-中封装的数组方法有哪些，为什么-Object-defineProperty-无法获取到数组的变化"><a href="#Vue-中封装的数组方法有哪些，为什么-Object-defineProperty-无法获取到数组的变化" class="headerlink" title="Vue 中封装的数组方法有哪些，为什么 Object.defineProperty 无法获取到数组的变化"></a><code>Vue</code> 中封装的数组方法有哪些，为什么 <code>Object.defineProperty</code> 无法获取到数组的变化</h3><p>vue2 中使用的数据劫持的方法是<code>Object.defineProperty</code>，但是它无法劫持到原生数组中的<code>length</code>和索引值的变化（如果使用<code>Object.defineProperty</code>监听数组每一个元素，对于大数组性能消耗较大），因此<code>Object.defineProperty</code>无法通过 <code>unshift</code> <code>push</code> <code>shift</code> <code>pop</code> <code>sort</code> <code>reverse</code> <code>splice</code> 属性来检测到数组的变化，所以对上述数组方法进行重写:首先基于<code>Array.prototype</code> 创建新原型对象并重写方法，在调用原始方法后，通过关联的<code>Observer</code>实例通知依赖更新，同时对新增元素递归转为响应式数据，最终通过替换数组实例的原型链实现拦截，解决<code>Object.defineProperty</code> 无法监听数组索引变化的问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 对defineProperty数组方法的重写</span></span><br><span class="line"><span class="keyword">const</span> arrayProto = <span class="title class_">Array</span>.<span class="property"><span class="keyword">prototype</span></span>;</span><br><span class="line"><span class="keyword">const</span> arrayMethods = <span class="title class_">Object</span>.<span class="title function_">create</span>(arrayProto);</span><br><span class="line"></span><br><span class="line">[<span class="string">&quot;push&quot;</span>, <span class="string">&quot;pop&quot;</span>, <span class="string">&quot;shift&quot;</span>, <span class="string">&quot;unshift&quot;</span>, <span class="string">&quot;splice&quot;</span>, <span class="string">&quot;sort&quot;</span>, <span class="string">&quot;reverse&quot;</span>].<span class="title function_">forEach</span>(</span><br><span class="line">  <span class="function">(<span class="params">method</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> original = arrayProto[method];</span><br><span class="line">    <span class="title function_">def</span>(arrayMethods, method, <span class="keyword">function</span> <span class="title function_">mutator</span>(<span class="params">...args</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> result = original.<span class="title function_">apply</span>(<span class="variable language_">this</span>, args);</span><br><span class="line">      <span class="keyword">const</span> ob = <span class="variable language_">this</span>.<span class="property">__ob__</span>; <span class="comment">// 获取 Observer 实例</span></span><br><span class="line">      ob.<span class="property">dep</span>.<span class="title function_">notify</span>(); <span class="comment">// 触发更新</span></span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将数组的原型指向重写后的对象</span></span><br><span class="line">arr.<span class="property">__proto__</span> = arrayMethods;</span><br></pre></td></tr></table></figure>
+<h3 id="谈谈-keep-alive"><a href="#谈谈-keep-alive" class="headerlink" title="谈谈 keep-alive"></a>谈谈 keep-alive</h3><p><code>keep-alive</code>是 <code>vue</code> 中的内置组件，能在<font style="color:#DF2A3F;">组件切换过程中将状态保留在内存中，防止重复渲染 <code>DOM</code>，常用于缓存不活动的组件以及动态组件和 <code>router-view</code> 的缓存</font></p>
+<p><code>keep-alive</code> 可以传递两个参数，分别是<code>include/exclude</code>和<code>max</code>，通过传入的<font style="color:#DF2A3F;">字符串或者数组</font>来实现名称匹配的<font style="color:#DF2A3F;">组件过滤</font>，<code>max</code>表示<font style="color:#DF2A3F;">最多缓存的组件数量</font></p>
+<p>当一个组件被<code>keep-alive</code>包裹时，会多出两个生命周期钩子：<code>activated</code>和<code>deactivated</code>,分别在组件被激活和停用时触发，</p>
+<p>通过<code>LRU</code>缓存策略，将过滤的组件存放到缓存数组中，如果数组中原本就存在该数组，就将该组件原本位置的 <code>key</code> 移除掉并将该组件的 <code>key</code> 放置在数组最后面，如果不存在就判断当前数组长度是否大于 <code>max</code>，如果大于就将最长时间未使用的组件从数组中移除。</p>
+<h3 id="对虚拟-DOM-的理解"><a href="#对虚拟-DOM-的理解" class="headerlink" title="对虚拟 DOM` 的理解"></a>对虚拟 DOM` 的理解</h3><p>从本质上讲，虚拟 DOM<code>是一个</code>JS<code>对象，通过对象的方式来表示页面  DOM</code> 结构，配合不同的渲染工具，使跨平台渲染成为可能。通过事务处理机制，将多次 DOM` 修改的结果一次性的更新到页面上，从而有效的减少页面渲染的次数，提高渲染性能</p>
+<p>虚拟 <code>DOM</code> 使对 <code>DOM</code> 的抽象，这个对象使更加轻量化的对 <code>DOM</code> 的描述，虚拟 <code>DOM</code> 设计的最初目的就是更好的跨平台，在代码渲染到页面之前，<code>vue</code> 就把模板中的代码转换成虚拟 DOM<code>，以对象的形式来描述真实的  DOM</code> 结构，在数据发生变化时，都会将目前的虚拟 DOM<code>与变化前缓存的虚拟  DOM</code> 进行对比。在 <code>vue</code> 内部封装了 <code>diff</code> 算法，通过 <code>diff</code> 算法进行比较来渲染需要修改的变化，最终渲染到页面上。</p>
+<h3 id="谈谈你对-nextTick-的理解"><a href="#谈谈你对-nextTick-的理解" class="headerlink" title="谈谈你对$nextTick 的理解"></a>谈谈你对<code>$nextTick</code> 的理解</h3><p><code>nextTick</code> 是 <code>vue</code> 中提供的一个异步操作的工具方法，它的作用是将一个回调函数延迟到下次 <code>DOM</code> 更新循环结束后执行</p>
+<p><code>nextTick</code> 通过异步任务队列来实现的,核心原理是将回调函数推入任务队列，这些回调函数会在当前宏任务执行完毕后执行，在不同的浏览器中 <code>vue</code> 会选择不同的方式，其中优先选择微任务的方法来确保回调函数能在 <code>DOM</code> 更新后被执行</p>
+<h3 id="template-到-render-的过程"><a href="#template-到-render-的过程" class="headerlink" title="template 到 render 的过程"></a><code>template</code> 到 <code>render</code> 的过程</h3><p><code>vue</code> 中会执行 <code>complieToFunctions</code> 将 <code>template</code> 转换成 <code>render</code> 函数</p>
+<p>主要逻辑如下：</p>
+<p>调用 <code>parse</code> 方法将 <code>template</code> 转化为 <code>ast</code>（抽象语法树），利用正则表达式顺序解析模板，当解析到开始标签、闭合标签、文本时分别执行对应的回调函数来达到构造 <code>AST</code> 树的目的，然后深度遍历 <code>AST</code> 树，对静态节点进行查找并标记，为后续更新渲染跳过静态节点做优化，最后将使用 <code>generate</code> 函数将 <code>AST</code> 树编译成可执行的 <code>render</code> 函数</p>
+<p><code>render</code> 函数到数据渲染到页面的过程</p>
+<p>执行 <code>render</code> 函数，<code>render</code> 函数根据传入的参数生成虚拟 <code>DOM</code> 节点，然后通过 <code>diff</code> 算法对虚拟 <code>DOM</code> 之间的对比生成补丁，然后应用补丁，更新真实的 DOM<code>，最终由浏览器渲染更新后的</code>DOM`</p>
+<h3 id="组件通信的方式"><a href="#组件通信的方式" class="headerlink" title="组件通信的方式"></a>组件通信的方式</h3><p>兄弟组件 使用<code>eventBus</code>的方法，它的本质是创建一个空的 <code>vue</code> 实例来作为消息传递的对象，通信的组件引入这个实例，通信的组件通过在这个实例上监听和触发事件，来实现消息的传递</p>
+<p>还能够使用<code>$parent/$ref</code>来获取兄弟组件，从而实现通信</p>
+<p>父子组件 子组件通过<code>props</code>属性来接受父组件的数据，然后父组件可以在子组件上注册监听事件，子组件通过<code>emit</code>触发事件来向父组件发送数据</p>
+<p>通过<code>ref</code>属性给子组件设置一个名字。父组件可以通过<code>$refs</code>组件名来获取子组件，子组件通过<code>$parent</code>获得父组件</p>
+<p>使用<code>provide</code> <code>inject</code>,在父组件中通过<code>provide</code>提供变量，在子组件中通过<code>inject</code>来将变量注入到组件中。</p>
+<h3 id="vue-和-react-的异同"><a href="#vue-和-react-的异同" class="headerlink" title="vue 和 react 的异同"></a><font style="color:#DF2A3F;"><code>vue</code> 和 <code>react</code> 的异同</font></h3><p><strong>相同点</strong></p>
+<ul>
+<li>组件化开发：<code>vue</code> 和 <code>react</code> 都采用了组件化开发的方式，将用户界面划分成独立、可复用的组件，提升代码的模块化和可维护性</li>
+<li>虚拟 <code>DOM</code>：<code>vue</code> 和 <code>react</code> 都采用了虚拟 <code>DOM</code> 技术，通过 JavaScript 和真实 <code>DOM</code> 之间建立一个轻量级的虚拟 <code>DOM</code> 层，实现高效的 <code>DOM</code> 更新和渲染</li>
+<li>响应式更新：当数据发生变化时，<code>Vue</code>和<code>React</code>都会自动更新相关的组件和视图，来保持用户界面的同步性</li>
+<li>专注视图层：<code>vue</code> 和 <code>react</code> 都专注于视图层的开发，将路由、状态管理等功能交给外部库处理，例如如 <code>Vue</code> 的 <code>Vuex</code>、<code>Vue Router</code>，<code>React</code> 的 <code>Redux</code>、<code>React Router</code> 等。</li>
+<li>单页面开发：<code>Vue</code> 和 <code>React</code> 都支持 <code>SPA</code> 开发，通过动态更新页面内容实现视图切换，提升用户体验</li>
+</ul>
+<p><strong>不同点</strong></p>
+<ul>
+<li>数据流不同：<code>vue</code> 更注重渐进式开发框架，提倡数据是可变的和鼓励双向数据绑定，而 <code>React</code> 更看重组件化的编程，更强调单向数据流和数据的不可变性，需要使用调用<code>useState()</code>通知组件状态改变，从而触发重现渲染。</li>
+<li>虚拟 <code>DOM</code> 不同：<code>vue</code> 在渲染过程中会跟踪每个组件的依赖关系，只更新部分组件，不需要重新渲染整个组件树，对于 <code>react</code> 而言，当应用的状态改变时，全部子组件就会重新渲染，依赖开发者手动优化（<code>react.memo</code>）</li>
+<li><code>diff</code> 算法不同：<code>vue3</code> 结合动态头尾指针和最长递增子序列算法，首先跳过相同的前置和后置的相同节点，减少对比范围，再根据 <code>key</code> 建立的新旧节点的索引值的映射表，通过最长递增子序列算法得到最长稳定子序列，仅移动非稳定的节点，最小化操作次数，而且 <code>vue3</code> 中还使用静态提升和补丁标记来实现 <code>diff</code> 算法的优化。<code>React</code> 的 <code>diff</code> 算法在 <code>Fiber</code> 架构和并发模式加持下，通过双缓冲机制、可中断遍历以及优先级调度实现了高效协调。核心是基于 <code>key</code> 的同层级节点复用和重新创建，但通过并发调度优化了渲染性能</li>
+<li>模板语法不同：<code>vue</code> 推荐的模板类似于 <code>HTML</code> 的编程，只是多了些属性，而 <code>react</code> 更推荐使用 <code>JS</code> 的语法扩展 <code>jsx</code> 的方式来书写</li>
+<li>响应式原理不同：<code>Vue</code> 采用了<font style="color:#DF2A3F;">数据劫持和发布订阅的方式</font>来实现数据的响应式。当一个 <code>Vue</code> 实例创建时，<code>Vue</code> 会递归遍历 <code>data</code> 选项中的所有属性，使用 <code>Object.defineProperty()</code> 或 <code>Proxy</code> 将这些属性转换为 <code>getter/setter</code>，实现数据的监听。当数据发生变化时调用相关函数，触发视图更新。<code>React</code> 依赖于状态和属性的显示更新来触发视图的重新渲染。在 <code>Fiber</code> 架构下，当调用<code>useState</code>返回的更新函数时，<code>React</code> 会更新任务加入调度队列，通过调度器和 <code>Fiber</code> 协调算法来决定视图的更新方式</li>
+</ul>
+<h3 id="MVC、MVVM、MVP-三者的区别和优缺点"><a href="#MVC、MVVM、MVP-三者的区别和优缺点" class="headerlink" title="MVC、MVVM、MVP 三者的区别和优缺点"></a><font style="color:#585A5A;"><code>MVC</code>、<code>MVVM</code>、<code>MVP</code> 三者的区别和优缺点</font></h3><p><code>MVC</code>指的是通过<code>model-view-controller</code>的方式来组织代码结构，其中<code>View</code>负责页面的显示逻辑，<code>Model</code>负责存储页面的业务逻辑以及相应数据的操作，<code>Controller</code>负责用户与应用的响应操作。当用户进行交互时，<code>controller</code>就会调用<code>Model</code>层来完成对<code>Model</code>的修改，然后<code>Model</code>层通知<code>view</code>层更新。适用于小型应用，但是其控制器容易变得复杂，耦合度较高。</p>
+<p><code>MVVM</code>指的是<code>model-view-viewmodel</code>,<code>model</code>代表数据模型，数据和业务逻辑都在<code>model</code>层中定义；<code>view</code>负责数据的展示，<code>viewmodel</code>负责监听<code>model</code>中数据的改变并且控制视图的更新，处理用户交互操作。当<code>model</code>中的数据改变时会触发<code>view</code>层的刷新，<code>view</code>中由于用户交互操作，而改变的数据也会在<code>model</code>中同步。优点是双向绑定简化视图更新，视图与模型解耦，缺点是难以调试，性能问题和构建维护成本较高。</p>
+<p><code>MVP</code>指的是<code>model-view-presenter</code>,和<code>MVC</code>组织代码结构的方式相似，但不同的是<code>MVP</code>是通过<code>Presenter</code>来实现对<code>view</code>层和<code>model</code>层的解耦，<code>view</code>层的接口暴露给<code>Presenter</code>将<code>Model</code>的变化和<code>view</code>的变化绑定在一起，实现 view 和<code>model</code>的同步更新。优点是视图和业务逻辑分离，易于测试，但是需要实现接口，<code>presenter</code>可能变得庞大。</p>
+<h3 id="Vue-的生命周期"><a href="#Vue-的生命周期" class="headerlink" title="Vue 的生命周期"></a>Vue 的生命周期</h3><ul>
+<li><code>beforeCreate</code> 数据观测和初始化事件还未开始，此时<code>data</code>的响应式追踪，<code>event</code>和<code>watcher</code>还没有被设置，此时还不能访问到<code>data</code>、<code>computed</code>、<code>watcher</code>、<code>methods</code>上的属性和方法</li>
+<li><code>created</code> 实例创建完成，实例上<code>options</code>都完成配置，但此时渲染的节点还未挂载到 <code>DOM</code> 上，所以无法访问到 <code>vue</code> 实例上的根 <code>DOM</code> 元素</li>
+<li><code>beforeMount</code> 实例挂载到 <code>DOM</code> 节点之前，相关的<code>render</code>函数首次被调用，实例已完成编译模板，把<code>data</code>中的数据和模板生成<code>html</code>，但是此时还未将<code>html</code>挂载到页面上</li>
+<li><code>mounted</code> 在 <code>vue</code> 实例上的根节点上替换上编译好的<code>html</code>内容，完成模板中的 <code>html</code> 渲染到页面中，在此过程中进行 ajax 的交互</li>
+<li><code>beforeUpdate</code>响应式数据更新时调用，此时响应式数据更新了但是真实的 DOM` 节点还未渲染</li>
+<li><code>updated</code>在数据更改后导致的虚拟 <code>DOM</code> 重新渲染和应用补丁后调用，此时 <code>DOM</code> 已经根据响应式数据的变化更新了，因此该阶段应避免数据更新导致无限视图更新</li>
+<li><code>beforedestory</code>实例销毁前调用，此时 <code>vue</code> 实例还存在，<code>this</code> 仍能获取到实例</li>
+<li><code>destoryed</code>实例销毁后调用，调用后，<code>vue</code> 实例指示的所有东西都会解绑，事件监听器也会被移除，所有子实例也会被销毁</li>
+</ul>
+<h3 id="父子组件中的生命周期执行顺序"><a href="#父子组件中的生命周期执行顺序" class="headerlink" title="父子组件中的生命周期执行顺序"></a><font style="color:#DF2A3F;">父子组件中的生命周期执行顺序</font></h3><font style="color:#DF2A3F;">渲染过程</font>
+
+<p>父组件<code>beforeCreate</code></p>
+<p>父组件 <code>created</code></p>
+<p>父组件 <code>beforeMount</code></p>
+<p>子组件 <code>beforeCreate</code></p>
+<p>子组件 <code>created</code></p>
+<p>子组件 <code>beforeMounted</code></p>
+<p>子组件 <code>mounted</code></p>
+<p>父组件 <code>mounted</code></p>
+<font style="color:#DF2A3F;">更新过程</font>
+
+<p>父组件 <code>beforeUpdate</code></p>
+<p>子组件 <code>beforeUpdate</code></p>
+<p>子组件 <code>updated</code></p>
+<p>父组件 <code>updated</code></p>
+<font style="color:#DF2A3F;">销毁过程</font>
+
+<p>父组件 <code>beforeDestroy</code></p>
+<p>子组件 <code>beforeDestroy</code></p>
+<p>子组件 <code>destoryed</code></p>
+<p>父组件 <code>destoryed</code></p>
+<h3 id="一般在哪个生命周期请求异步数据"><a href="#一般在哪个生命周期请求异步数据" class="headerlink" title="一般在哪个生命周期请求异步数据"></a>一般在哪个生命周期请求异步数据</h3><p>一般在 <code>data</code> 数据创建后就可以进行异步请求获取服务器端的数据，在 <code>created</code>，<code>beforeMount</code>，<code>mounted</code> 中都可以进行调用，但是推荐在 <code>created</code> 中进行请求异步数据，因为 <code>created</code> 中能更快获取到服务器端数据，减少页面加载事件，用户加载时间，优化用户体验</p>
+<h3 id="对前端路由的理解-vue-router-的原理"><a href="#对前端路由的理解-vue-router-的原理" class="headerlink" title="对前端路由的理解 vue-router 的原理"></a>对前端路由的理解 <code>vue-router</code> 的原理</h3><p>前端路由是现代单页面应用的核心机制，与传统的后端路由不同的是前端路由无需向服务器发送请求，它允许在不重新加载整个页面的情况下，通过动态切换 <code>URL</code> 来实现局部视图的更新，减少了页面的重绘和重排</p>
+<p>前端路由可分为 <code>hash</code> 模式和 <code>history</code> 模式</p>
+<h3 id="路由的-hash-和-history-模式的区别"><a href="#路由的-hash-和-history-模式的区别" class="headerlink" title="路由的 hash 和 history 模式的区别"></a>路由的 <code>hash</code> 和 <code>history</code> 模式的区别</h3><p><code>hash</code>和<code>history</code>分别是<code>vue-router</code>的两种模式，其中默认的路由模式是<code>hash</code>模式</p>
+<p><code>hash</code>模式在前端路由开发中默认的模式，它的 <code>URL</code> 中带着一个<code>#</code>,<code>hash</code>值会出现在<code>URL</code>中，但是不会出现在<code>http</code>请求中，对后端没有影响，在改变<code>hash</code>值时不会重新加载页面，其主要的原理时<code>onhashchange()</code>事件，在页面的<code>hash</code>值发生变化时，无需向后端发送请求，<code>window</code>就可以监听事件的改变，并按规则加载相应的代码</p>
+<p><code>history</code>模式的<code>URL</code>中没有<code>#</code>，它类似于传统的路由分发模式，在应用内导航不会触发服务器请求，当用户输入一个<code>URL</code>进行直接访问时，服务器会接收这个请求，解析后执行相应的逻辑处理，但是如果没有相对应的路由或者资源就会测出<code>404</code>，其主要原理是切换历史模式和修改历史模式，即<code>pushState()/replaceState()</code>方法，这两个方法应用于浏览器的历史记录栈，提供了对历史记录修改的功能</p>
+<h3 id="vue-router-的懒加载"><a href="#vue-router-的懒加载" class="headerlink" title="vue-router 的懒加载"></a><code>vue-router</code> 的懒加载</h3><p>在<code>vue</code>中路由的懒加载是通过异步组件的方式来实现的，即当路由被访问时，相关的组件才会被加载，这样可以减少首屏加载时的资源体积，提高应用性能。</p>
+<p>常用的实现懒加载的方法有</p>
+<p>使用<font style="color:#DF2A3F;">箭头函数+import/require</font>动态加载</p>
+<p>使用<font style="color:#DF2A3F;">webpack 的 require.ensure 技术</font>，也可以实现按需加载</p>
+<h3 id="vue-router-的懒加载和非懒加载之间是如何进行分包的"><a href="#vue-router-的懒加载和非懒加载之间是如何进行分包的" class="headerlink" title="vue-router 的懒加载和非懒加载之间是如何进行分包的"></a>vue-router 的懒加载和非懒加载之间是如何进行分包的</h3><p>对于静态导入打包路由组件时会直接合并到主包中，没有额外分包，对于懒加载/动态导入(<code>import()</code>)的组件会触发<code>webpack</code>代码分割，生成独立的<code>chunk</code>文件，仅在访问对应路由时加载，可减少初始包的体积和初始加载时间，提升应用性能</p>
+<h3 id="如何获取页面的-hash-的变化"><a href="#如何获取页面的-hash-的变化" class="headerlink" title="如何获取页面的 hash 的变化"></a>如何获取页面的 hash 的变化</h3><p>通过监听<code>$route</code>的变化</p>
+<p>通过<code>window.location.hash</code>读取#值</p>
+<h3 id="route和-router-的区别"><a href="#route和-router-的区别" class="headerlink" title="$route和$router 的区别"></a>$route和$router 的区别</h3><p><code>$route</code> 指的是“路由信息对象”，包括<code>path</code>、<code>params</code>、<code>hash</code>、<code>query</code>、<code>fullPath</code>、<code>matched</code>、<code>name</code>等路由信息参数</p>
+<p><code>$router</code> 指的是“路由实例”对象包括路由的跳转方法，钩子函数等</p>
+<h3 id="如何定义动态路由？如何获取传过来的动态参数"><a href="#如何定义动态路由？如何获取传过来的动态参数" class="headerlink" title="如何定义动态路由？如何获取传过来的动态参数"></a>如何定义动态路由？如何获取传过来的动态参数</h3><p>可以通过<code>param</code>和<code>query</code>方式来定义动态路由，对于 param 来说使用<code>:</code>来标记路径中的动态参数，想要获取<code>param</code>的动态参数可以使用<code>this.$route.params</code>来获取动态参数，也可以在路由配置中设置<code>props:true</code>，然后在组件中通过<code>props</code>接收参数。对于<code>query</code>来说，它无需预先定义，直接在跳转的操作中传递<code>query</code>参数即可，可以通过<code>this.$route.query</code>获取传递的参数即可</p>
+<h3 id="vue-router-中的路由钩子和导航守卫"><a href="#vue-router-中的路由钩子和导航守卫" class="headerlink" title="vue-router 中的路由钩子和导航守卫"></a><code>vue-router</code> 中的路由钩子和导航守卫</h3><p>根据路由的导航过程可以将其分为全局路由守卫，路由独享守卫以及组件守卫。对于全局路由守卫，其内部含有<code>beforeEach (跳转前执行)</code>、<code>beforeReslove (路由解析)</code>、<code>afterEach (跳转后触发)</code>，全局守卫常用于判断用户是否鉴权，其次是路由独享守卫，其内部含有<code>beforeEnter</code>钩子，常用于判断用户权限是否符合，最后是组件守卫，作用于当前组件，内部含有<code>beforeRouteEnter</code>、<code>beforeRouteUpdate</code>、<code>beforeRouteLeave</code>,常用于提醒用户离开页面时当前页面编辑内容未保存。</p>
+<h3 id="vue-router-跳转和-location-href-之间的区别-lt-router-link-gt-和-a-标签有啥区别"><a href="#vue-router-跳转和-location-href-之间的区别-lt-router-link-gt-和-a-标签有啥区别" class="headerlink" title="vue-router 跳转和 location.href 之间的区别 &lt;router-link&gt;和 a 标签有啥区别"></a><code>vue-router</code> 跳转和 <code>location.href</code> 之间的区别 <code>&lt;router-link&gt;</code>和 <code>a</code> 标签有啥区别</h3><p>使用<code>location.href = /url</code>来跳转，简单方便，但是刷新页面，</p>
+<p>使用<code>router.push(/url)</code>来跳转，其基本原理是<code>history.pushState(/url)</code>,使用 diff 算法实现了按需加载，减少了 DOM`的消耗</p>
+<p><code>router-link</code>的原理和<code>vue-router</code>的底层原理一样，都是使用<code>history.pushState(/url)</code>来跳转，尽管<code>router-link</code>默认渲染成 <code>a</code> 标签，但是在 <code>history</code> 模式下对跳转进行了拦截，然后调用<code>pushState(/url)</code>方法进行视图更新</p>
+<h3 id="vuex-的原理和理解"><a href="#vuex-的原理和理解" class="headerlink" title="vuex 的原理和理解"></a><code>vuex</code> 的原理和理解</h3><p><code>vuex</code> 是 <code>Vue</code> 的集中状态管理工具，核心是<code>store</code>，<code>store</code>的本质是一个用来存储应用中所有状态的容器，<code>vuex</code>的优点是能够对响应式的数据状态进行存储，以及模块化管理不同的状态和逻辑，实现集中式状态管理，提高代码的可维护性。</p>
+<p><code>vuex</code>中的数据状态管理是单向数据流，且状态存储是响应式的，组件中通过触发<code>dispatch</code> <code>action</code>事件或者动作，再通过调用<code>commit</code>提交动作到<code>mutations</code>中，由<code>mutations</code>改变<code>state</code>中的数据，当<code>state</code>中数据被改变之后，就会重新渲染到相应的 vue 组件中，组件展示更新后的数据</p>
+<h3 id="vuex-中-action-和-mutation-的区别"><a href="#vuex-中-action-和-mutation-的区别" class="headerlink" title="vuex 中 action 和 mutation 的区别"></a><code>vuex</code> 中 <code>action</code> 和 <code>mutation</code> 的区别</h3><p><code>action</code>和<code>mutation</code>都是<code>vuex</code>中的属性，<code>action</code>中常用于处理行为操作模块，负责处理组件中接收到的交互行为，可以进行异步操作，支持多个同名方法，按照注册顺序依次触发，并且<code>action</code>中提交的是<code>mutation</code>，而不是直接变更状态，而对于<code>mutation</code>来说，更专注于修改<code>state</code>，只能进行同步操作，且方法名不能重复</p>
+<h3 id="vuex-和-localStorage-的区别"><a href="#vuex-和-localStorage-的区别" class="headerlink" title="vuex 和 localStorage 的区别"></a><code>vuex</code> 和 <code>localStorage</code> 的区别</h3><p><code>vuex</code>存储在内存中，<code>localStorage</code>以文件的方式存储在本地，只能存储字符串类型的数据，存储对象需要<code>JSON</code>的<code>stringfy</code>和<code>parse</code>方法进行处理，其次是<code>vuex</code>是专门为 vue 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化，而<code>localStorage</code>是本地存储，是将数据存储到浏览器的方法，一般在跨页面传递数据时使用，以及在刷新页面时<code>vuex</code>存储的值会丢失（可以使用持久化存储在<code>localstorage</code>中），<code>localstorage</code>不会。</p>
+<h3 id="redux-和-vuex-的区别以及为什么要使用他们"><a href="#redux-和-vuex-的区别以及为什么要使用他们" class="headerlink" title="redux 和 vuex 的区别以及为什么要使用他们"></a><code>redux</code> 和 <code>vuex</code> 的区别以及为什么要使用他们</h3><p><code>vuex</code>和<code>redux</code>都是进行全局状态管理的工具，<code>vuex</code>借鉴了<code>redux</code>，将<code>store</code>作为全局的数据中心，进行<code>model</code>管理，而且<code>vuex</code>改进了<code>redux</code>中的<code>action</code>和<code>reducer</code>函数，使用<code>mutation</code>变化函数取代<code>reducer</code>，只需在对应的<code>mutation</code>函数里改变<code>state</code>值即可</p>
+<p>在组件中常需要进行相互通信，但常用的<code>props</code>传参和<code>emit</code>对于多层嵌套的组件就显得比较繁琐，而且无法对兄弟组件间进行状态管理，因此将组件的共享状态进行抽取，以一个全局单例模式管理帮助组件间进行通信和统一状态管理</p>
+<h3 id="vuex-和-pinia-之间的区别"><a href="#vuex-和-pinia-之间的区别" class="headerlink" title="vuex 和 pinia 之间的区别"></a><code>vuex</code> 和 <code>pinia</code> 之间的区别</h3><ul>
+<li><code>API</code> 设计不同：<code>vuex</code>采用类似于 <code>Redux</code> 的模式，包含<code>actions</code>、<code>mutations</code>、<code>state</code>等，使用<code>Actions</code>处理异步逻辑，<code>Mutations</code> 进行同步更新。相较于<code>Vuex</code>，<code>Pinia</code>设计更加简洁移除了<code>Mutation</code>修改<code>state</code>，可以使用<code>action</code>进行异步/同步修改。</li>
+<li>模块化开发不同：<code>vuex</code>使用的<code>modules</code>进行拆分，模块间通信需要使用<code>namespaced</code>，<code>pinia</code>采用<code>defineStore</code>方式，每个<code>store</code>独立使用，可以直接导入其他<code>store</code>并使用</li>
+<li>数据持久化存储方式不同：在<code>vuex</code>中需要引入<code>vuex-persistedstate</code>存储到<code>localStorage</code>，而在<code>Pinia</code>内置<code>pinia-plugin-persistedstate</code>，可以直接配置<code>persist</code>进行数据持久化</li>
+<li>状态访问方式：<code>vuex</code>中需要使用<code>mapState</code>来映射数据，代码相对冗长，在<code>pinia</code>可以通过访问<code>store.state</code>来获取状态信息，使用<code>storeToRefs</code>使得状态具备响应式</li>
+</ul>
+<h3 id="虚拟-DOM-的解析过程"><a href="#虚拟-DOM-的解析过程" class="headerlink" title="虚拟 DOM` 的解析过程"></a>虚拟 DOM` 的解析过程</h3><p>首先对将要插入到文档中的 <code>DOM</code> 树结构进行分析，使用 <code>js</code> 对象将其表示出来，其中包括节点类型、属性以及事件监听器等，然后将 <code>js</code> 对象树保存下来，最后将 <code>DOM</code> 片段插入到文档中，当页面中的状态发生变化时，会根据变化的状态，重新构建起一颗对象树，将这颗新的对象树和旧的对象树进行比较，最后将有差异的地方应用到真实 DOM` 树中，完成视图的更新</p>
+<h3 id="虚拟-DOM-和真实-DOM-相比有什么区别"><a href="#虚拟-DOM-和真实-DOM-相比有什么区别" class="headerlink" title="虚拟 DOM 和真实 DOM 相比有什么区别"></a>虚拟 <code>DOM</code> 和真实 <code>DOM</code> 相比有什么区别</h3><p>真实 <code>DOM</code> 是实例的 <code>DOM</code> 树，属于浏览器中的元素树，而对虚拟 <code>DOM</code> 来说它本质上一个 JS 对象，用于模拟真实的 <code>DOM</code>，而且在更新时真实 <code>DOM</code> 都会重新渲染整个 <code>DOM</code>，而虚拟 <code>DOM</code> 往往只更新数据发生变化的部分，减少了页面的重回和重排，提高了性能优化，而且与真实 <code>DOM</code> 相比，虚拟 <code>DOM</code> 的跨平台支持效果更好，不仅支持 <code>web</code> 端还支持移动端渲染，但是在 <code>vue</code> 中在首次渲染时需要将模板中的数据转换成虚拟 <code>DOM</code>，最终转换成真实 <code>DOM</code> 插入到页面文档中，就会导致页面加载较慢</p>
+<h3 id="如何优化-vue-中首屏中的短暂白屏"><a href="#如何优化-vue-中首屏中的短暂白屏" class="headerlink" title="如何优化 vue 中首屏中的短暂白屏"></a>如何优化 <code>vue</code> 中首屏中的短暂白屏</h3><p>出现白屏的原因：页面在加载时需要较长时间来解析、执行 <code>javascript</code>，或者等待资源加载完成。</p>
+<p>优化：</p>
+<p>使用代码分割来加载首屏中的异步组件和路由懒加载来按需加载模块，</p>
+<p>提取首屏关键 <code>CSS</code>，将其内联到 <code>html</code> 文件中，延迟加载非关键资源，实现优化 <code>CSS</code> 和资源加载</p>
+<p>使用服务器端渲染或者静态预渲染，即同构渲染。</p>
+<h3 id="vue-中-key-的作用"><a href="#vue-中-key-的作用" class="headerlink" title="vue 中 key 的作用"></a><code>vue</code> 中 <code>key</code> 的作用</h3><p><code>key</code> 是作为 <code>vue</code> 中 <code>vnode</code> 的唯一标记，通过 <code>key</code> 标识符，<code>diff</code> 操作可以更最准确和更快速</p>
+<p><code>key</code> 可以帮助实现节点复用和高效更新，<code>vue</code> 是通过 <code>key</code> 建立新旧虚拟 <code>DOM</code> 节点的映射关系的，如果新旧节点的 <code>key</code> 相同，<code>vue</code> 就会复用该节点，如果不同就会销毁旧节点创建新节点</p>
+<p>而且 <code>key</code> 还能避免错误复用，如果没有 <code>key</code>，<code>vue</code> 会默认使用节点的位置索引作为标识，就可能导致错误复用，在 <code>v-for</code> 中 <code>key</code> 也起到动态列表的性能优化，但是不能将 index 作为 <code>key</code> 的值，可能会导致节点复用错误，渲染出错。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://weilaiggbond.github.io/">webbond</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://weilaiggbond.github.io/post/43b7283f.html">https://weilaiggbond.github.io/post/43b7283f.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://weilaiggbond.github.io" target="_blank">webbond の 博客</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/cover-four.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/post/bec2f2e9.html" title="前端面经-前端基础"><img class="cover" src="/img/cover-two.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">前端面经-前端基础</div></div><div class="info-2"><div class="info-item-1">HTML+CSS 问答HTML5 新特性 语义化标签：根据内容的结构化选择合适的标签  语义化标签有利于 SEO 搜索引擎优化，同时增加代码的可读性和更利于代码维护  常见的语义化标签有: header nav main section aside footer  音频、视频标签：audio、video 数据存储：localStorage、sessionStorage canvas （画布）、History API 路由跳转、websocket（通信协议） input标签新增属性：placeholder、autocomplete、autofocus、required DOM查询方式：document.querySelector()、documnet.querySelectorAll()  src 和 href 之间的区别src 表示对资源的引用，将指向的内容嵌入当前标签所在的位置，src 会将其指向的资源下载并应用到文档内，当浏览器解析到该元素时，会暂停其他资源的下载和处理，因此 src 会阻塞文档的解析过程 href...</div></div></div></a><a class="pagination-related" href="/post/8370c532.html" title="前端面经-前端React技术栈"><img class="cover" src="/img/cover-three.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">前端面经-前端React技术栈</div></div><div class="info-2"><div class="info-item-1">react 中常用的 hookuseState:用于在函数组件中声明和管理状态,它返回的是一个数组，其中包括当前状态值和更新状态的函数。 useEffect:用于处理函数组件中的副作用，常用于处理数据获取、订阅事件、定时器函数等。useEffect接收两个参数，一个是函数，一个是用来控制副作用函数执行时机依赖数组。如果没有传递数组参数就默认在每次组件渲染后执行，如果传递了数组参数，就会根据数组中参数发生变化后执行。 useContext:用于访问 react 上下文的值。上下文允许数据在不同组件间共享，而不需要通过组件逐层向下传递 props useCallback:用于记忆组件方法，避免在每次渲染时都要重新创建函数，从而提高性能。useCallback 接收两个参数，分别是记忆化的回调函数 和 依赖项的数组 。主要的应用场景有避免子组件不必要的渲染，和保存回调函数的状态 useMemo:用户缓存计算结果，避免在每次渲染时重新计算。useMemo 接收两个参数，分别是 执行的计算逻辑函数 和 依赖项数组 。useMemo...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">webbond</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" href="https://weilaiggbond.github.io/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/weilaiGGbond" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-%E4%B8%AD%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">vue 中双向数据绑定的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue2-%E5%92%8C-vue3-%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB"><span class="toc-number">2.</span> <span class="toc-text">vue2 和 vue3 的主要区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#diff-%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">diff 算法的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97%E5%9C%A8%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E8%A7%A6%E5%8F%91%E6%9B%B4%E6%96%B0"><span class="toc-number">4.</span> <span class="toc-text">最长递增子序列在什么时候会触发更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SPA-%E4%B8%AD%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98-SEO-%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E4%BC%98%E5%8C%96%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">SPA 中如何提高 SEO 的搜索引擎优化？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#watch-%E5%92%8C-watchEffect-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">6.</span> <span class="toc-text">watch 和 watchEffect 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ref-%E5%92%8C-reactive-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.</span> <span class="toc-text">ref 和 reactive 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#watch%E3%80%81computed%E3%80%81methods%E4%B8%89%E8%80%85%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">8.</span> <span class="toc-text">watch、computed、methods三者的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-if%E3%80%81v-show%E3%80%81v-html-%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">9.</span> <span class="toc-text">v-if、v-show、v-html 的原理和之间的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#data-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E8%80%8C%E4%B8%8D%E6%98%AF%E5%AF%B9%E8%B1%A1"><span class="toc-number">10.</span> <span class="toc-text">data 为什么是一个函数而不是对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-if-%E5%92%8C-v-for-%E5%8F%AF%E4%BB%A5%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">11.</span> <span class="toc-text">v-if 和 v-for 可以一起使用吗？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-model-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%92%8C-vue2-%E4%B8%AD%E7%9A%84-v-model-%E5%92%8C-vue3-%E4%B9%8B%E9%97%B4%E7%9A%84%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">12.</span> <span class="toc-text">v-model 的实现原理和 vue2 中的 v-model 和 vue3 之间的有什么区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%92%8C%E5%A4%9A%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%8C%BA%E5%88%AB-SSR-CSR-SSG-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">13.</span> <span class="toc-text">vue 单页面和多页面的区别 SSR CSR SSG 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vue-%E4%B8%AD%E5%B0%81%E8%A3%85%E7%9A%84%E6%95%B0%E7%BB%84%E6%96%B9%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88-Object-defineProperty-%E6%97%A0%E6%B3%95%E8%8E%B7%E5%8F%96%E5%88%B0%E6%95%B0%E7%BB%84%E7%9A%84%E5%8F%98%E5%8C%96"><span class="toc-number">14.</span> <span class="toc-text">Vue 中封装的数组方法有哪些，为什么 Object.defineProperty 无法获取到数组的变化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%88%E8%B0%88-keep-alive"><span class="toc-number">15.</span> <span class="toc-text">谈谈 keep-alive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%99%9A%E6%8B%9F-DOM-%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">16.</span> <span class="toc-text">对虚拟 DOM&#96; 的理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%88%E8%B0%88%E4%BD%A0%E5%AF%B9-nextTick-%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">17.</span> <span class="toc-text">谈谈你对$nextTick 的理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#template-%E5%88%B0-render-%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">18.</span> <span class="toc-text">template 到 render 的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">19.</span> <span class="toc-text">组件通信的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-%E5%92%8C-react-%E7%9A%84%E5%BC%82%E5%90%8C"><span class="toc-number">20.</span> <span class="toc-text">vue 和 react 的异同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MVC%E3%80%81MVVM%E3%80%81MVP-%E4%B8%89%E8%80%85%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">21.</span> <span class="toc-text">MVC、MVVM、MVP 三者的区别和优缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vue-%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">22.</span> <span class="toc-text">Vue 的生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%B8%AD%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">23.</span> <span class="toc-text">父子组件中的生命周期执行顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E5%9C%A8%E5%93%AA%E4%B8%AA%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E8%AF%B7%E6%B1%82%E5%BC%82%E6%AD%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">24.</span> <span class="toc-text">一般在哪个生命周期请求异步数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1%E7%9A%84%E7%90%86%E8%A7%A3-vue-router-%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">25.</span> <span class="toc-text">对前端路由的理解 vue-router 的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E7%9A%84-hash-%E5%92%8C-history-%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">26.</span> <span class="toc-text">路由的 hash 和 history 模式的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-router-%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD"><span class="toc-number">27.</span> <span class="toc-text">vue-router 的懒加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-router-%E7%9A%84%E6%87%92%E5%8A%A0%E8%BD%BD%E5%92%8C%E9%9D%9E%E6%87%92%E5%8A%A0%E8%BD%BD%E4%B9%8B%E9%97%B4%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E5%88%86%E5%8C%85%E7%9A%84"><span class="toc-number">28.</span> <span class="toc-text">vue-router 的懒加载和非懒加载之间是如何进行分包的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A1%B5%E9%9D%A2%E7%9A%84-hash-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="toc-number">29.</span> <span class="toc-text">如何获取页面的 hash 的变化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#route%E5%92%8C-router-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">30.</span> <span class="toc-text">$route和$router 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%EF%BC%9F%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E4%BC%A0%E8%BF%87%E6%9D%A5%E7%9A%84%E5%8A%A8%E6%80%81%E5%8F%82%E6%95%B0"><span class="toc-number">31.</span> <span class="toc-text">如何定义动态路由？如何获取传过来的动态参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-router-%E4%B8%AD%E7%9A%84%E8%B7%AF%E7%94%B1%E9%92%A9%E5%AD%90%E5%92%8C%E5%AF%BC%E8%88%AA%E5%AE%88%E5%8D%AB"><span class="toc-number">32.</span> <span class="toc-text">vue-router 中的路由钩子和导航守卫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-router-%E8%B7%B3%E8%BD%AC%E5%92%8C-location-href-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB-lt-router-link-gt-%E5%92%8C-a-%E6%A0%87%E7%AD%BE%E6%9C%89%E5%95%A5%E5%8C%BA%E5%88%AB"><span class="toc-number">33.</span> <span class="toc-text">vue-router 跳转和 location.href 之间的区别 &lt;router-link&gt;和 a 标签有啥区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vuex-%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E7%90%86%E8%A7%A3"><span class="toc-number">34.</span> <span class="toc-text">vuex 的原理和理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vuex-%E4%B8%AD-action-%E5%92%8C-mutation-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">35.</span> <span class="toc-text">vuex 中 action 和 mutation 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vuex-%E5%92%8C-localStorage-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">36.</span> <span class="toc-text">vuex 和 localStorage 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redux-%E5%92%8C-vuex-%E7%9A%84%E5%8C%BA%E5%88%AB%E4%BB%A5%E5%8F%8A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E4%BB%96%E4%BB%AC"><span class="toc-number">37.</span> <span class="toc-text">redux 和 vuex 的区别以及为什么要使用他们</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vuex-%E5%92%8C-pinia-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">38.</span> <span class="toc-text">vuex 和 pinia 之间的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F-DOM-%E7%9A%84%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B"><span class="toc-number">39.</span> <span class="toc-text">虚拟 DOM&#96; 的解析过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F-DOM-%E5%92%8C%E7%9C%9F%E5%AE%9E-DOM-%E7%9B%B8%E6%AF%94%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">40.</span> <span class="toc-text">虚拟 DOM 和真实 DOM 相比有什么区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96-vue-%E4%B8%AD%E9%A6%96%E5%B1%8F%E4%B8%AD%E7%9A%84%E7%9F%AD%E6%9A%82%E7%99%BD%E5%B1%8F"><span class="toc-number">41.</span> <span class="toc-text">如何优化 vue 中首屏中的短暂白屏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-%E4%B8%AD-key-%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">42.</span> <span class="toc-text">vue 中 key 的作用</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/4af591e9.html" title="前端面经-前端工程化"><img src="/img/cover-two.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端面经-前端工程化"/></a><div class="content"><a class="title" href="/post/4af591e9.html" title="前端面经-前端工程化">前端面经-前端工程化</a><time datetime="2025-04-18T12:03:53.000Z" title="发表于 2025-04-18 20:03:53">2025-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/95c2dd30.html" title="前端面经-前端计网"><img src="/img/cover-one.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端面经-前端计网"/></a><div class="content"><a class="title" href="/post/95c2dd30.html" title="前端面经-前端计网">前端面经-前端计网</a><time datetime="2025-04-05T12:03:35.000Z" title="发表于 2025-04-05 20:03:35">2025-04-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/8370c532.html" title="前端面经-前端React技术栈"><img src="/img/cover-three.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端面经-前端React技术栈"/></a><div class="content"><a class="title" href="/post/8370c532.html" title="前端面经-前端React技术栈">前端面经-前端React技术栈</a><time datetime="2025-03-27T12:03:11.000Z" title="发表于 2025-03-27 20:03:11">2025-03-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/43b7283f.html" title="前端面经-前端vue技术栈"><img src="/img/cover-four.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端面经-前端vue技术栈"/></a><div class="content"><a class="title" href="/post/43b7283f.html" title="前端面经-前端vue技术栈">前端面经-前端vue技术栈</a><time datetime="2025-03-22T12:02:53.000Z" title="发表于 2025-03-22 20:02:53">2025-03-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/bec2f2e9.html" title="前端面经-前端基础"><img src="/img/cover-two.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端面经-前端基础"/></a><div class="content"><a class="title" href="/post/bec2f2e9.html" title="前端面经-前端基础">前端面经-前端基础</a><time datetime="2025-03-15T12:02:27.000Z" title="发表于 2025-03-15 20:02:27">2025-03-15</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">随便讲点什么</p><div class="bg-ad"><div>这里是由 weilaibond 精心搭建的 个人编程学习博客，一个专注于记录「从编程小白到独立开发者」成长轨迹的专属空间。无论你是初入代码世界的萌新，还是正在寻找技术共鸣的同行者，都能在这里找到属于自己的探索坐标。</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://github.com/weilaiGGbond/">weilaibond の github</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">胡乱导航</p><ul class="ft-links"><li><a href="https://weilaiggbond.github.io/about/">关于博主</a><a href="https://weilaiggbond.github.io/archives/">文章归档</a></li><li><a href="https://weilaiggbond.github.io/categories/">文章分类</a><a href="https://weilaiggbond.github.io/tags/">文章标签</a></li></ul></div></div></div></div><div class="copyright">&copy;2022 - 2025  <i id="heartbeat" class="fa fas fa-heartbeat"></i> webbond</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script async src="//at.alicdn.com/t/font_2032782_8d5kxvn09md.js"></script><!-- hexo injector body_end end --></body></html>
